@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fein?!</title>
+</head>
+<body>
+<h1>Hello. This is my homepage and the main directory to the other parts for my server</h1>
+  <h2>For others, if you arent on my wifi, then this is just akward.</h2>
+<p>So, overveiw, this is my website, server, thing. This is only acessable through a server adress. <strong>THIS IS A WORK IN PROGRESS!</strong> Nothing pretty will be here. At least not yet...</p>
+  <h2>How about you take me to the<a href="https://10.0.0.16:10000/filemin/index.cgi?path=%2Fvar%2Fwww%2Fhtml&xnavigation=1" target="_blank"> File Browser</a>?</h2>
+    <h2> This takes you to the <a href="https://10.0.0.16:10000/sysinfo.cgi?xnavigation=1" target="_blank">Main Directory</a> for now at least</h2>
+  <h6>Where does <a href="https://www.google.com/url?sa=i&url=https%3A%2F%2Famogus.fandom.com%2Fwiki%2FAmogus&psig=AOvVaw1WoeSifvaCNJbVcMO7o5vA&ust=1739034424604000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPiS15qGsosDFQAAAAAdAAAAABAE" target="_blank">this</a> go?</h6>
+  <h3> Yes Dad, i built this from the ground up!</h3>
+  <h2>This takes you to<a href="https://github.com/Norodlocated" target="_blank"> somewhere</a>...</h2>
+  <h2>Hello Children of the basement!</h2>
+<img src="HTML5.gif" alt="HTML gif">
+<h3></h3>
+<img src="Izzy.gif" alt="My Dog!">
+<h1>HI MOM! I BET YOU CAN SEE THIS!</h1>
+<h1> this is what i see when i am writing it!</h1>
+<img src="screenshotcode.jpeg" alt="a screenshot of code" width="880" height="440">
+<h1> I guess i can acess this from the server as well? its werid.</h1>
+<img src="Doggowaving1.gif" alt="A dog waving gif">
+<h1>TO DO</h1>
+<ul>
+<li>Make finished code</li>
+<li>create costom layout</li>
+<li><strong>More creative disign</strong></li>
+</ul>
+    <audio controls>
+    <source src="FOREVERMORE.mp3" type="audio/mp3">
+    </audio>
+<h1></h1>
+<a href="FOREVERMORE.mp3">Download</a>
+<h1> we got some music!</h1>
+
+<audio controls>
+<source src="Bill Nye The Science Guy Theme Song But Im Screaming The Lyrics.mp3" type="audio/mp3">
+</audio>
+
+<h1>CHILDHOOD SCIENCE (jumpscare)</h1>
+
+<a href="Bill Nye The Science Guy Theme Song But Im Screaming The Lyrics.mp3">Bill</a>
+
+<h1>we got Trading</h1>
+
+<audio controls>
+<source src="OUTSIDER TRADING - THEME SONG.mp3" type="audio/mp3">
+</audio>
+
+<h2>i dont know?</h2>
+
+<audio controls>
+<source src="HELLO NEIGHBOR SONG (GET OUT) LYRIC VIDEO - DAGames.mp3" type="audio/mp3" alt="your browser does not support this audio">
+</audio>
+
+<h3> Test a WAV file</h3>
+<audio controls>
+<source src="Gimkit Snowbrawl Music.wav" type="audio/wav">
+</audio>
+<h1> </h1>
+<img src="DoNotTheCat.jpeg" alt="a meme">
+<h1></h1>
+</body>
+</html>
