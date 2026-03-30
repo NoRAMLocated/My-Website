@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 — Leadership Group Dynamics</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:    #0E0E0E;
+    --red:   #D4362A;
+    --white: #F0EDE8;
+    --muted: rgba(240,237,232,0.45);
+    --border: rgba(240,237,232,0.1);
+    --panel: rgba(255,255,255,0.03);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30vw;
+    color: rgba(212,54,42,0.04);
+    line-height: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: -0.02em;
+    user-select: none;
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: revealUp 0.7s 0.2s ease forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: 0.01em;
+    opacity: 0;
+    animation: revealUp 0.7s 0.35s ease forwards;
+  }
+
+  .hero h1 .red { color: var(--red); }
+
+  .hero-sub {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    color: var(--muted);
+    margin-top: 1.2rem;
+    max-width: 520px;
+    opacity: 0;
+    animation: revealUp 0.7s 0.5s ease forwards;
+  }
+
+  .hero-date {
+    margin-top: 2rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    opacity: 0;
+    animation: revealUp 0.7s 0.65s ease forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: revealUp 0.7s 1s ease forwards;
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--red), transparent);
+    animation: pulse-down 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-down {
+    0%,100% { transform: scaleY(1); opacity: 0.5; }
+    50%      { transform: scaleY(1.3); opacity: 1; }
+  }
+
+  /* ── Section ── */
+  section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 5rem 4rem;
+  }
+
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: rgba(212,54,42,0.12);
+    line-height: 1;
+    margin-bottom: -1rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+  }
+
+  /* ── Timeline ── */
+  .timeline {
+    position: relative;
+    margin: 2rem 0;
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 80px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .tl-fill {
+    width: 100%;
+    background: var(--red);
+    height: 0%;
+    transition: height 1.5s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 80px 24px 1fr;
+    align-items: start;
+    gap: 0 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .tl-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .tl-period {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    color: var(--red);
+    text-align: right;
+    padding-top: 0.1rem;
+  }
+
+  .tl-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--red);
+    margin-top: 0.2rem;
+    justify-self: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tl-dot.active {
+    background: var(--red);
+    box-shadow: 0 0 12px rgba(212,54,42,0.5);
+  }
+
+  .tl-content h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: var(--white);
+  }
+
+  .tl-content p {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── Divider ── */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* ── Style wheel ── */
+  .wheel-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .wheel-canvas-wrap {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+  }
+
+  #wheelCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .wheel-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+
+  .legend-item.visible { opacity: 1; transform: translateX(0); }
+
+  .li-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .li-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.15rem;
+  }
+
+  .li-desc {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── Insight cards ── */
+  .insight-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin-top: 1.5rem;
+  }
+
+  .ins-card {
+    background: var(--bg);
+    padding: 1.8rem 1.5rem;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .ins-card.visible { opacity: 1; transform: translateY(0); }
+  .ins-card:hover { background: var(--panel); }
+
+  .ins-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .ins-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .ins-text {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* ── Analysis block ── */
+  .analysis-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 1rem;
+  }
+
+  .analysis-cols p {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: rgba(240,237,232,0.75);
+    margin-bottom: 1rem;
+  }
+
+  .pull-quote {
+    border-left: 2px solid var(--red);
+    padding-left: 1.2rem;
+    margin: 1.5rem 0;
+  }
+
+  .pull-quote p {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1.1rem !important;
+    color: var(--white) !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  footer .red { color: var(--red); }
+
+  @keyframes revealUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-bg-text">LEAD</div>
+  <div class="eyebrow">Week 7 · February 17, 2026 · Noah Loar</div>
+  <h1>GROUP<br><span class="red">DYNAMICS</span></h1>
+  <p class="hero-sub">What happens when three coaching leaders try to lead each other — and nobody takes command.</p>
+  <div class="hero-date">Entry on 2/17/26 · Written 3/9/26 · Sprint 2 Reflection</div>
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- Timeline Section -->
+<section>
+  <div class="section-num">01</div>
+  <div class="section-title">How the Sprint Unfolded</div>
+
+  <div class="timeline">
+    <div class="timeline-line">
+      <div class="tl-fill" id="tlFill"></div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-period">Day 1</div>
+      <div class="tl-dot active"></div>
+      <div class="tl-content">
+        <h4>The Leadership Void</h4>
+        <p>We started the sprint without a clear leader. All three of us shared the coaching style — nobody moved to take command. We kept asking each other who wanted the role.</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-period">1.5 Periods</div>
+      <div class="tl-dot active"></div>
+      <div class="tl-content">
+        <h4>Time Lost</h4>
+        <p>Roughly one and a half class periods passed before we settled on roles. All three of us lacked the commanding trait — and it showed in our inability to make a fast decision.</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-period">Turning Point</div>
+      <div class="tl-dot active"></div>
+      <div class="tl-content">
+        <h4>Organizational Traits to the Rescue</h4>
+        <p>We stopped trying to find a "natural leader" and instead used our <em>organizational traits</em> to match each person to the role they were best suited for.</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-period">Product Lead</div>
+      <div class="tl-dot active"></div>
+      <div class="tl-content">
+        <h4>Noah Takes Product Lead</h4>
+        <p>Knowing I had difficulty with time management and presenting, I chose the product lead role. This led to a well-thought-out product — organized enough to bring in Juniors from outside the room.</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-period">Takeaway</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>The Lesson Learned</h4>
+        <p>Each leadership style has its time and place. When groups lack a mix of styles, they tend to be less productive and efficient. A team of all coaches needs at least one commander.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Stats -->
+<section>
+  <div class="section-num">02</div>
+  <div class="section-title">Sprint Metrics</div>
+
+  <div class="insight-row">
+    <div class="ins-card">
+      <div class="ins-num">3</div>
+      <div class="ins-label">Team Size</div>
+      <div class="ins-text">All three members shared the coaching leadership style — zero commanding trait between them.</div>
+    </div>
+    <div class="ins-card">
+      <div class="ins-num ins-num" style="color:rgba(212,54,42,0.5)">1.5</div>
+      <div class="ins-label">Class Periods Lost</div>
+      <div class="ins-text">Time spent debating leadership before using organizational logic to break the stalemate.</div>
+    </div>
+    <div class="ins-card">
+      <div class="ins-num" style="color:#5DBB7A">✓</div>
+      <div class="ins-label">Outcome</div>
+      <div class="ins-text">Well-organized final product. Strong enough to draw in Juniors from outside the room.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Leadership Wheel -->
+<section>
+  <div class="section-num">03</div>
+  <div class="section-title">The Style Breakdown</div>
+
+  <div class="wheel-container">
+    <div class="wheel-canvas-wrap">
+      <canvas id="wheelCanvas"></canvas>
+    </div>
+    <div class="wheel-legend">
+      <div class="legend-item">
+        <div class="li-color" style="background:#D4362A"></div>
+        <div>
+          <div class="li-name">Coaching ×3</div>
+          <div class="li-desc">Develops people through guidance. Our dominant style — but not enough alone.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="li-color" style="background:rgba(240,237,232,0.12)"></div>
+        <div>
+          <div class="li-name">Commanding ×0</div>
+          <div class="li-desc">Decisive, directive leadership. The gap that cost us 1.5 class periods.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="li-color" style="background:rgba(240,237,232,0.12)"></div>
+        <div>
+          <div class="li-name">Visionary ×0</div>
+          <div class="li-desc">Inspires toward a shared goal. Would have helped with big-picture direction.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="li-color" style="background:rgba(240,237,232,0.12)"></div>
+        <div>
+          <div class="li-name">Affiliative ×0</div>
+          <div class="li-desc">Builds team harmony. Possibly what let us avoid conflict despite no clear leader.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Analysis -->
+<section>
+  <div class="section-num">04</div>
+  <div class="section-title">Full Analysis</div>
+
+  <div class="analysis-cols">
+    <div>
+      <p>
+        From my experience during this sprint, I found that instead of someone taking a leadership role
+        willingly, we would all ask whether someone else wanted the role.
+      </p>
+      <div class="pull-quote">
+        <p>"Having similar leadership traits was not helpful — we were all underskilled in the commanding trait."</p>
+      </div>
+      <p>
+        Having a group of three people who all shared the coaching leadership style seemed to be our
+        biggest problem. Eventually, we used our organizational traits to determine who would best
+        fit each role.
+      </p>
+    </div>
+    <div>
+      <p>
+        Knowing I had more difficulty with time management and presenting, I decided to take on
+        the product lead role — which ultimately led to a well-thought-out product.
+      </p>
+      <p>
+        The final product was well organized enough to bring in some Juniors who were outside the room.
+      </p>
+      <p>
+        I have found that each leadership style has its time and place, but when groups lack a mix
+        of styles, they tend to be less productive or efficient.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Noah Loar · Week 7</span>
+  <span class="red">Leadership Group Dynamics</span>
+  <span>February 17, 2026</span>
+</footer>
+
+<script>
+  // ── Intersection Observer for scroll reveals ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.tl-item, .ins-card, .legend-item').forEach(el => observer.observe(el));
+
+  // Stagger tl items
+  document.querySelectorAll('.tl-item').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.12) + 's';
+  });
+
+  document.querySelectorAll('.ins-card').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.1) + 's';
+  });
+
+  document.querySelectorAll('.legend-item').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.12) + 's';
+  });
+
+  // Timeline fill on scroll
+  const tlObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.getElementById('tlFill').style.height = '100%';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  const tlEl = document.querySelector('.timeline');
+  if (tlEl) tlObs.observe(tlEl);
+
+  // ── Leadership Wheel (Canvas) ──
+  function drawWheel() {
+    const canvas = document.getElementById('wheelCanvas');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const size = rect.width;
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const cx = size / 2, cy = size / 2;
+    const radius = size * 0.38;
+    const innerR = size * 0.16;
+
+    const styles = [
+      { label: 'Coaching',   pct: 1.00, color: '#D4362A' },
+      { label: 'Commanding', pct: 0.06, color: 'rgba(240,237,232,0.1)' },
+      { label: 'Visionary',  pct: 0.06, color: 'rgba(240,237,232,0.1)' },
+      { label: 'Affiliative',pct: 0.06, color: 'rgba(240,237,232,0.1)' },
+    ];
+
+    const total = styles.reduce((s, x) => s + x.pct, 0);
+    let angle = -Math.PI / 2;
+
+    styles.forEach(s => {
+      const slice = (s.pct / total) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, radius, angle, angle + slice);
+      ctx.closePath();
+      ctx.fillStyle = s.color;
+      ctx.fill();
+      ctx.strokeStyle = '#0E0E0E';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      angle += slice;
+    });
+
+    // Inner circle
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.fillStyle = '#0E0E0E';
+    ctx.fill();
+
+    // Center text
+    ctx.fillStyle = '#D4362A';
+    ctx.font = `bold ${size * 0.07}px 'Bebas Neue', sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('×3', cx, cy - size * 0.015);
+    ctx.fillStyle = 'rgba(240,237,232,0.4)';
+    ctx.font = `${size * 0.04}px 'DM Sans', sans-serif`;
+    ctx.fillText('Coach', cx, cy + size * 0.055);
+
+    // Outer labels
+    ctx.font = `${size * 0.038}px 'DM Sans', sans-serif`;
+    ctx.fillStyle = 'rgba(240,237,232,0.55)';
+    let a2 = -Math.PI / 2;
+    styles.forEach(s => {
+      const slice = (s.pct / total) * Math.PI * 2;
+      const mid = a2 + slice / 2;
+      const lx = cx + (radius + size * 0.07) * Math.cos(mid);
+      const ly = cy + (radius + size * 0.07) * Math.sin(mid);
+      ctx.fillStyle = s.pct > 0.5 ? '#D4362A' : 'rgba(240,237,232,0.3)';
+      ctx.fillText(s.label, lx, ly);
+      a2 += slice;
+    });
+  }
+
+  window.addEventListener('load', () => {
+    drawWheel();
+  });
+  window.addEventListener('resize', drawWheel);
+</script>
+</body>
+</html>

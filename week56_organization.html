@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 5–6 — Organization</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1C1C2E;
+    --accent: #FF6B6B;
+    --blue:   #4ECDC4;
+    --yellow: #FFE66D;
+    --purple: #A29BFE;
+    --text:   #F8F8F2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Desktop background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(162,155,254,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(78,205,196,0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* ── Taskbar ── */
+  .taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 44px;
+    background: rgba(28,28,46,0.92);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    gap: 1rem;
+    z-index: 1000;
+    font-size: 0.72rem;
+    color: rgba(248,248,242,0.5);
+    letter-spacing: 0.06em;
+  }
+
+  .taskbar-time {
+    margin-left: auto;
+    font-family: 'Syne Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(248,248,242,0.7);
+  }
+
+  .tb-icon {
+    font-size: 1.1rem;
+    cursor: default;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .tb-icon:hover { opacity: 1; }
+
+  /* ── Desktop ── */
+  .desktop {
+    min-height: 100vh;
+    padding: 2rem;
+    padding-bottom: 60px;
+    position: relative;
+  }
+
+  /* ── Main window ── */
+  .window {
+    background: rgba(36,36,58,0.95);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    width: 520px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: windowOpen 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    z-index: 10;
+  }
+
+  @keyframes windowOpen {
+    from { opacity: 0; transform: translateX(-50%) scale(0.85); }
+    to   { opacity: 1; transform: translateX(-50%) scale(1); }
+  }
+
+  .window-title {
+    background: rgba(255,255,255,0.06);
+    padding: 0.7rem 1rem;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .wt-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .wt-dot:nth-child(1) { background: #FF5F56; }
+  .wt-dot:nth-child(2) { background: #FFBD2E; }
+  .wt-dot:nth-child(3) { background: #27C93F; }
+
+  .wt-name {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: rgba(248,248,242,0.6);
+    margin-left: 0.5rem;
+    font-family: 'Syne Mono', monospace;
+  }
+
+  .window-body {
+    padding: 1.5rem;
+  }
+
+  .window-body h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.02em;
+  }
+
+  .window-body .week-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 1rem;
+  }
+
+  .window-body p {
+    font-size: 0.83rem;
+    line-height: 1.7;
+    color: rgba(248,248,242,0.75);
+    margin-bottom: 0.7rem;
+  }
+
+  .stress-phrase {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── Scattered files ── */
+  .file-scatter {
+    position: absolute;
+    background: #fff;
+    border-radius: 4px;
+    font-family: 'Syne Mono', monospace;
+    font-size: 0.65rem;
+    color: #333;
+    padding: 0.4rem 0.7rem;
+    box-shadow: 3px 3px 12px rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+    z-index: 5;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .file-scatter:hover {
+    z-index: 20;
+    box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
+  }
+
+  .file-scatter .fi { font-size: 0.9rem; }
+
+  /* ── Folders ── */
+  .folder {
+    position: absolute;
+    width: 80px;
+    cursor: pointer;
+    z-index: 5;
+    text-align: center;
+    transition: transform 0.2s;
+    animation: wobble 4s ease-in-out infinite;
+  }
+  .folder:hover { transform: scale(1.12) !important; }
+
+  @keyframes wobble {
+    0%,100% { rotate: var(--r); }
+    50%      { rotate: calc(var(--r) + 3deg); }
+  }
+
+  .folder-icon { font-size: 2.5rem; display: block; margin-bottom: 0.2rem; }
+  .folder-name { font-size: 0.6rem; color: rgba(248,248,242,0.7); letter-spacing: 0.04em; }
+
+  /* ── Error popup ── */
+  .error-popup {
+    position: absolute;
+    background: #C0C0C0;
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    width: 280px;
+    z-index: 30;
+    box-shadow: 4px 4px 0 #000;
+    animation: popIn 0.3s 1.5s ease both;
+    opacity: 0;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .ep-title {
+    background: #000080;
+    color: #fff;
+    font-family: 'Syne Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.6rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .ep-body {
+    padding: 0.8rem;
+    font-family: 'Syne Mono', monospace;
+    font-size: 0.68rem;
+    color: #000;
+    line-height: 1.5;
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+
+  .ep-icon { font-size: 1.6rem; flex-shrink: 0; }
+
+  .ep-btn {
+    display: block;
+    width: 60px;
+    margin: 0 auto 0.6rem;
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    background: #C0C0C0;
+    font-family: 'Syne Mono', monospace;
+    font-size: 0.68rem;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    text-align: center;
+  }
+
+  .ep-btn:active {
+    border-top-color: #808080;
+    border-left-color: #808080;
+    border-bottom-color: #fff;
+    border-right-color: #fff;
+  }
+
+  /* ── Desktop icons ── */
+  .d-icon {
+    position: absolute;
+    width: 72px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 5;
+    padding: 0.4rem;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .d-icon:hover { background: rgba(78,205,196,0.15); }
+  .d-icon-img { font-size: 2rem; display: block; }
+  .d-icon-label { font-size: 0.58rem; color: rgba(248,248,242,0.8); margin-top: 0.2rem; letter-spacing: 0.04em; }
+</style>
+</head>
+<body>
+<div class="desktop">
+
+  <!-- Main window -->
+  <div class="window">
+    <div class="window-title">
+      <div class="wt-dot"></div><div class="wt-dot"></div><div class="wt-dot"></div>
+      <span class="wt-name">organization_reflection.txt</span>
+    </div>
+    <div class="window-body">
+      <div class="week-tag">Week 5–6 · Organization</div>
+      <h2>The Chaos Inside My Computer</h2>
+      <p>
+        From what I wrote, I can assume that my view on organization is
+        <span class="stress-phrase">lower than it should be.</span>
+        I think that, from my experience with different organizational strategies,
+        most do not align with how my brain functions.
+      </p>
+      <p>
+        I would like to use organizational strategies and have a schedule,
+        but only a few of the tactics I have actually work. I usually feel frustrated
+        because I have a hard time keeping track of things.
+      </p>
+      <p>
+        The most difficult part of my organizing struggle is keeping my
+        <span class="stress-phrase">files on my computer organized.</span>
+        My downloads are everywhere, I can't find my important documents,
+        and if I want to find a photo, I'm better off looking online.
+      </p>
+      <p>
+        My best bet is creating tons of folders to store everything.
+        I feel upset about these things, and I try more and more ways to help myself,
+        but they rarely work.
+      </p>
+    </div>
+  </div>
+
+  <!-- Error popup -->
+  <div class="error-popup" style="top: 380px; left: 50%; transform: translateX(-30%);">
+    <div class="ep-title">
+      <span>⚠ File Not Found</span>
+      <span style="cursor:pointer">✕</span>
+    </div>
+    <div class="ep-body">
+      <span class="ep-icon">🚫</span>
+      <span>Cannot locate important_document.pdf<br>in any known directory.<br>Check Downloads? (347 files)</span>
+    </div>
+    <button class="ep-btn" onclick="this.closest('.error-popup').style.display='none'">OK</button>
+  </div>
+
+  <!-- Scattered files -->
+  <div class="file-scatter" style="top:14%; left:5%; transform:rotate(-8deg)"><span class="fi">📄</span>untitled_final.docx</div>
+  <div class="file-scatter" style="top:18%; left:7%; transform:rotate(4deg); margin-top:30px;"><span class="fi">📄</span>untitled_final_FINAL.docx</div>
+  <div class="file-scatter" style="top:22%; left:6%; transform:rotate(-2deg); margin-top:60px;"><span class="fi">📄</span>untitled_final_FINAL_v2.docx</div>
+  <div class="file-scatter" style="top:30%; right:5%; transform:rotate(6deg)"><span class="fi">🖼</span>IMG_20241103_unnamed.jpg</div>
+  <div class="file-scatter" style="top:35%; right:5%; transform:rotate(-3deg); margin-top:28px;"><span class="fi">🖼</span>screenshot_826.png</div>
+  <div class="file-scatter" style="top:60%; left:4%; transform:rotate(12deg)"><span class="fi">📦</span>download(1).zip</div>
+  <div class="file-scatter" style="top:65%; left:3%; transform:rotate(-5deg); margin-top:25px;"><span class="fi">📦</span>download(2).zip</div>
+  <div class="file-scatter" style="bottom:14%; right:6%; transform:rotate(-9deg)"><span class="fi">⚙</span>setup_installer.exe</div>
+
+  <!-- Folders -->
+  <div class="folder" style="top:75%; left:5%; --r:-4deg; transform:rotate(var(--r))">
+    <span class="folder-icon">📁</span>
+    <span class="folder-name">New Folder</span>
+  </div>
+  <div class="folder" style="top:77%; left:15%; --r:5deg; transform:rotate(var(--r))">
+    <span class="folder-icon">📁</span>
+    <span class="folder-name">New Folder(2)</span>
+  </div>
+  <div class="folder" style="top:75%; right:5%; --r:3deg; transform:rotate(var(--r))">
+    <span class="folder-icon">📂</span>
+    <span class="folder-name">Important Stuff</span>
+  </div>
+  <div class="folder" style="top:77%; right:16%; --r:-6deg; transform:rotate(var(--r))">
+    <span class="folder-icon">📁</span>
+    <span class="folder-name">stuff2</span>
+  </div>
+
+  <!-- Desktop icons top right -->
+  <div class="d-icon" style="top:2%; right:2%">
+    <span class="d-icon-img">🗑</span>
+    <span class="d-icon-label">Trash (Full)</span>
+  </div>
+  <div class="d-icon" style="top:11%; right:2%">
+    <span class="d-icon-img">💾</span>
+    <span class="d-icon-label">My Planner</span>
+  </div>
+</div>
+
+<!-- Taskbar -->
+<div class="taskbar">
+  <span class="tb-icon">🏠</span>
+  <span class="tb-icon">📁</span>
+  <span class="tb-icon">🔍</span>
+  <span style="font-size:0.7rem; color:rgba(255,107,107,0.7)">organization_reflection.txt — Week 5–6</span>
+  <span class="taskbar-time" id="clock"></span>
+</div>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  }
+  updateClock();
+  setInterval(updateClock, 60000);
+</script>
+</body>
+</html>
